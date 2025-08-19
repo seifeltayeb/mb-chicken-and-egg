@@ -60,9 +60,11 @@ egg = Table(
     metadata_obj,
     Column("id", String, primary_key=True),
     Column("laying_chicken_id", ForeignKey("chicken.id"), nullable=False),
+    Column("rooster_id", ForeignKey("chicken.id"),nullable=False),
     Column("egg_color", Enum(EggColor), nullable=False),
     Column("laying_spot_id", ForeignKey("laying_spot.id"), nullable=False),
     Column("laying_date", Date, nullable=False),
+    Column("hatching_successful",Boolean,default=True)
 )
 
 ## chicken table schema
@@ -77,6 +79,7 @@ chicken = Table(
     Column("egg_id", String, ForeignKey("egg.id"), nullable=True),
     Column("breed_id",ForeignKey("breed.id"),nullable=False),
     Column("favourite_song_id", Integer, ForeignKey("song.id")),
+    Column("expired",Boolean,nullable=True,default=False)
 )
 
 ## song table schema
@@ -122,5 +125,5 @@ with engine.connect() as connection:
         {"name": "Minorca", "comb_type": ["single", "rose"], "egg_colors": ["white"]},
     ]
     res = connection.execute(insert(breed).values(breed_data))
-    res.commit()
+    connection.commit()
     print("Breeds succesfully inserted!")
